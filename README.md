@@ -1,6 +1,4 @@
-# First Python Project
-
-This is a test repo
+# Chess
 
 Getting started:
 1. clone the repo to your local pc using git clone
