@@ -36,7 +36,7 @@ def drawBoard(screen):
             color = colors[(row+col) % 2]
             p.draw.rect(screen, color, p.Rect(
                 col*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE))
-            
+
 
 def drawPieces(screen, board):
     for row in range(DIMENTION):
@@ -56,10 +56,31 @@ def main():
     loadImages()
     running = True
 
+    sqSelected = ()
+    playerClickes = []
+
     while running:
         for event in p.event.get():
             if event.type == p.QUIT:
                 running = False
+            elif event.type == p.MOUSEBUTTONDOWN:
+                location = p.mouse.get_pos()
+                col = location[0] // SQ_SIZE
+                row = location[1] // SQ_SIZE
+                if sqSelected == (row, col):
+                    sqSelected = ()
+                    playerClickes = []
+                else:
+                    sqSelected = (row, col)
+                    playerClickes.append(sqSelected)
+
+                if len(playerClickes) == 2:
+                    move = ChessEngine.Move(playerClickes[0], playerClickes[1],gs.board)
+                    print(move.getChessNotation())
+                    gs.makeMove(move)
+                    sqSelected = ()
+                    playerClickes = []
+
         clock.tick(MAX_FPS)
         DrawGameState(screen, gs)
         p.display.flip()
