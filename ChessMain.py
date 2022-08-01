@@ -1,3 +1,4 @@
+from distutils.file_util import move_file
 import pygame as p
 import ChessEngine
 
@@ -53,6 +54,8 @@ def main():
     clock = p.time.Clock()
     screen.fill("white")
     gs = ChessEngine.GameState()
+    validMoves = gs.getValidMoves()
+    moveMade = False
     loadImages()
     running = True
 
@@ -75,11 +78,22 @@ def main():
                     playerClickes.append(sqSelected)
 
                 if len(playerClickes) == 2:
-                    move = ChessEngine.Move(playerClickes[0], playerClickes[1],gs.board)
+                    move = ChessEngine.Move(
+                        playerClickes[0], playerClickes[1], gs.board)
                     print(move.getChessNotation())
-                    gs.makeMove(move)
+                    if move in validMoves:
+                        gs.makeMove(move)
+                        moveMade = True
                     sqSelected = ()
                     playerClickes = []
+            elif event.type == p.KEYDOWN:
+                if event.key == p.K_z:
+                    gs.undoMove()
+                    moveMade = True
+        if moveMade:
+            validMoves = gs.getValidMoves()
+            print(validMoves)
+            moveMade = False
 
         clock.tick(MAX_FPS)
         DrawGameState(screen, gs)
