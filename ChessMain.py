@@ -20,10 +20,27 @@ def loadImages():
             p.image.load(f"img/{piece}.png"), (SQ_SIZE, SQ_SIZE))
 
 
-def DrawGameState(screen, gs):
+def DrawGameState(screen, gs, validMoves, selected_piece):
     # TODO  add highlight to selected piece and move seggestions
     drawBoard(screen)  # Drawing the board
+    drawHighlight(screen, gs, validMoves, selected_piece)
     drawPieces(screen, gs.board)  # Drawing the pieces
+
+
+def drawHighlight(screen, gs, validMoves, selected_piece):
+    if selected_piece != ():
+        r, c = selected_piece
+        if gs.board[r][c][0] == ('w' if gs.whiteToMove else 'b'):
+            s = p.Surface((SQ_SIZE, SQ_SIZE))
+            s.set_alpha(100)
+            s.fill('blue')
+            screen.blit(s, (c*SQ_SIZE, r*SQ_SIZE))
+
+            s.fill("yellow")
+            for move in validMoves:
+                if move.startRow == r and move.startCol == c:
+                    screen.blit(
+                        s, (move.startCol * SQ_SIZE, move.endRow * SQ_SIZE))
 
 
 def drawBoard(screen):
@@ -96,7 +113,7 @@ def main():
             moveMade = False
 
         clock.tick(MAX_FPS)
-        DrawGameState(screen, gs)
+        DrawGameState(screen, gs, validMoves, sqSelected)
         p.display.flip()
 
 
