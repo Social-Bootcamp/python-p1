@@ -1,4 +1,3 @@
-from distutils.file_util import move_file
 import pygame as p
 import ChessEngine
 
@@ -40,7 +39,7 @@ def drawHighlight(screen, gs, validMoves, selected_piece):
             for move in validMoves:
                 if move.startRow == r and move.startCol == c:
                     screen.blit(
-                        s, (move.startCol * SQ_SIZE, move.endRow * SQ_SIZE))
+                        s, (move.endCol * SQ_SIZE, move.endRow * SQ_SIZE))
 
 
 def drawBoard(screen):

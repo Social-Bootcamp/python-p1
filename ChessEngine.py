@@ -3,14 +3,14 @@ class GameState:
 
     def __init__(self):
         self.board = [
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],#0
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
-            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
+            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"] #7
         ]
         self.whiteToMove = True
         self.moveLog = []
@@ -83,7 +83,7 @@ class Move:
         self.endCol = endSQ[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
-        self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
+        self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol 
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other,Move):
