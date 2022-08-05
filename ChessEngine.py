@@ -40,6 +40,7 @@ class GameState:
                     piece = self.board[row][col][1]
                     if piece == "P":
                         self.getPawnMoves(row, col, moves)
+                    # Add bishop move comparison
         return moves
 
     def getPawnMoves(self, row, col, moves):
@@ -66,6 +67,13 @@ class GameState:
             if col+1 <=7:
                 if self.board[row+1][col+1][0] == 'w':
                     moves.append(Move((row,col),(row+1,col+1),self.board))
+
+    def getBishopMoves(self, row, col, moves):
+        color = 'w' if self.whiteToMove else 'b'
+        if color == 'w':
+
+        elif color == 'b':
+
 
 class Move:
     rankToRows = {"1": 7, "2": 6, "3": 5,
