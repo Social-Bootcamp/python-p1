@@ -86,8 +86,26 @@ class GameState:
         pass
 
     def getRookMoves(self, row, col, moves):
-        pass
+        directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
+        enemyColor = 'b' if self.whiteToMove else 'w'
 
+        for d in directions:
+            for i in range(1, 8):
+                endRow = row + d[0] * i
+                endCol = col + d[1] * i
+
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endSQ = self.board[endRow][endCol]
+                    if endSQ == '--':
+                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                    elif endSQ[0] == enemyColor:
+                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                            break
+                    else:
+                        break
+                else:
+                    break
+                
     def getQueenMoves(self, row, col, moves):
         pass
 
