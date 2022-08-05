@@ -69,16 +69,18 @@ class GameState:
                     moves.append(Move((row, col), (row+1, col+1), self.board))
 
     def getKnightMoves(self, row, col, moves):
-        knightMoves = ((-2,-1),(-2,1),(-1,-2),(-1,2),(1,-2),(1,2),(2,-1),(2,1))
-        allyColor = 'w' if self.whiteToMove else 'b'
+        knightMoves = ((-2, -1), (-2, 1), (-1, -2), (-1, 2),
+                       (1, -2), (1, 2), (2, -1), (2, 1))  # move directions
+        allyColor = 'w' if self.whiteToMove else 'b'  # ally piece color
 
         for move in knightMoves:
             endRow = row + move[0]
             endCol = col + move[1]
-            if 0 <= endRow < 8 and 0<=endCol<8:
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endSQ = self.board[endRow][endCol]
                 if endSQ[0] != allyColor:
-                    moves.append(Move((row,col),(endRow,endCol), self.board))
+                    moves.append(
+                        Move((row, col), (endRow, endCol), self.board))
 
     def getBishopMoves(self, row, col, moves):
         pass
