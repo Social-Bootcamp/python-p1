@@ -105,9 +105,27 @@ class GameState:
                         break
                 else:
                     break
-                
+
     def getQueenMoves(self, row, col, moves):
-        pass
+        directions = ((1,0),(-1,0),(0,1),(0,-1),(1,1),(-1,1),(1,-1),(-1,-1))
+        enemyColor = 'b' if self.whiteToMove else 'w'
+
+        for d in directions:
+            for i in range(1, 8):
+                endRow = row + d[0] * i
+                endCol = col + d[1] * i
+
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endSQ = self.board[endRow][endCol]
+                    if endSQ == '--':
+                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                    elif endSQ[0] == enemyColor:
+                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                            break
+                    else:
+                        break
+                else:
+                    break
 
     def getKingMoves(self, row, col, moves):
         pass
@@ -138,9 +156,15 @@ class Move:
         return False
 
     def getChessNotation(self):
-        if 'w' in self.pieceMoved:
-            return "White: "+self.getRankFile(self.startRow, self.startCol) + " --> " + self.getRankFile(self.endRow, self.endCol)
-        return "Black: "+self.getRankFile(self.startRow, self.startCol) + " --> " + self.getRankFile(self.endRow, self.endCol)
+        if self.pieceMoved[1] != 'P':
+            if 'w' in self.pieceMoved:
+                return "White: "+ self.pieceMoved[1]+self.getRankFile(self.endRow, self.endCol)
+            return "Black: "+ self.pieceMoved[1] + self.getRankFile(self.endRow, self.endCol)
+        else:
+            if 'w' in self.pieceMoved:
+                return "White: " + self.getRankFile(self.endRow, self.endCol)
+            return "Black: " + self.getRankFile(self.endRow, self.endCol)
+            
 
     def getRankFile(self, r, c):
         return self.colToFiles[c] + self.rowToRanks[r]
