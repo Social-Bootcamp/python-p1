@@ -83,9 +83,7 @@ class GameState:
                     moves.append(
                         Move((row, col), (endRow, endCol), self.board))
 
-    def getBishopMoves(self, row, col, moves):
-        pass
-
+   
     def getRookMoves(self, row, col, moves):
         directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
         enemyColor = 'b' if self.whiteToMove else 'w'
