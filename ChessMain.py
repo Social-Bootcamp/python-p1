@@ -20,7 +20,6 @@ def loadImages():
 
 
 def DrawGameState(screen, gs, validMoves, selected_piece):
-    # TODO  add highlight to selected piece and move seggestions
     drawBoard(screen)  # Drawing the board
     drawHighlight(screen, gs, validMoves, selected_piece)
     drawPieces(screen, gs.board)  # Drawing the pieces

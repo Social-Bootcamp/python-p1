@@ -17,17 +17,32 @@ class GameState:
         self.moveFunctions = {'P': self.getPawnMoves, 'N': self.getKnightMoves, 'B': self.getBishopMoves,
                               'R': self.getRookMoves, 'Q': self.getQueenMoves, 'K': self.getKingMoves}
 
+        self.whiteKingLocation = (7, 4)
+        self.blackKingLocation = (0, 4)
+
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
+        if move.pieceMoved == "wK":
+            self.whiteKingLocation = (move.endRow,move.endCol)
+        elif move.pieceMoved == "bK":
+            self.whiteKingLocation = (move.endRow,move.endCol)
 
     def undoMove(self):
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
-            self.board[move.startRow][move.startCol] = move.pieceMoved
-            self.board[move.endRow][move.endCol] = '--'
+            if move.pieceCaptured != '--':
+                self.board[move.startRow][move.startCol] = move.pieceMoved
+                self.board[move.endRow][move.endCol] = move.pieceCaptured
+            else:
+                self.board[move.startRow][move.startCol] = move.pieceMoved
+                self.board[move.endRow][move.endCol] = '--'
+            if move.pieceMoved == "wK":
+                self.whiteKingLocation = (move.endRow,move.endCol)
+            elif move.pieceMoved == "bK":
+                self.whiteKingLocation = (move.endRow,move.endCol)
             self.whiteToMove = not self.whiteToMove
 
     def getValidMoves(self):
@@ -83,7 +98,6 @@ class GameState:
                     moves.append(
                         Move((row, col), (endRow, endCol), self.board))
 
-   
     def getRookMoves(self, row, col, moves):
         directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
         enemyColor = 'b' if self.whiteToMove else 'w'
@@ -96,17 +110,20 @@ class GameState:
                 if 0 <= endRow < 8 and 0 <= endCol < 8:
                     endSQ = self.board[endRow][endCol]
                     if endSQ == '--':
-                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                        moves.append(
+                            Move((row, col), (endRow, endCol), self.board))
                     elif endSQ[0] == enemyColor:
-                            moves.append(Move((row, col), (endRow, endCol), self.board))
-                            break
+                        moves.append(
+                            Move((row, col), (endRow, endCol), self.board))
+                        break
                     else:
                         break
                 else:
                     break
 
     def getQueenMoves(self, row, col, moves):
-        directions = ((1,0),(-1,0),(0,1),(0,-1),(1,1),(-1,1),(1,-1),(-1,-1))
+        directions = ((1, 0), (-1, 0), (0, 1), (0, -1),
+                      (1, 1), (-1, 1), (1, -1), (-1, -1))
         enemyColor = 'b' if self.whiteToMove else 'w'
 
         for d in directions:
@@ -117,18 +134,37 @@ class GameState:
                 if 0 <= endRow < 8 and 0 <= endCol < 8:
                     endSQ = self.board[endRow][endCol]
                     if endSQ == '--':
-                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                        moves.append(
+                            Move((row, col), (endRow, endCol), self.board))
                     elif endSQ[0] == enemyColor:
-                            moves.append(Move((row, col), (endRow, endCol), self.board))
-                            break
+                        moves.append(
+                            Move((row, col), (endRow, endCol), self.board))
+                        break
                     else:
                         break
                 else:
                     break
 
     def getKingMoves(self, row, col, moves):
-        pass
 
+        kingMoves = ((1, 0), (-1, 0), (0, 1), (0, -1),
+                     (1, 1), (-1, 1), (1, -1), (-1, -1))
+        enemyColor = 'b' if self.whiteToMove else 'w'
+
+        for i in range(8):
+
+            endRow = row + kingMoves[i][0]
+            endCol = col + kingMoves[i][1]
+
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endSQ = self.board[endRow][endCol]
+                if endSQ == '--':
+                    moves.append(
+                        Move((row, col), (endRow, endCol), self.board))
+                elif endSQ[0] == enemyColor:
+                    moves.append(
+                        Move((row, col), (endRow, endCol), self.board))
+                    break
 
     def getBishopMoves(self, row, col, moves):
         bishopMoves = ((1, 1), (1, -1), (-1, -1), (-1, 1))
@@ -141,9 +177,11 @@ class GameState:
                 if 0 <= endRow < 8 and 0 <= endCol < 8:
                     endSq = self.board[endRow][endCol]
                     if endSq == '--':
-                        moves.append(Move((row, col), (endRow, endCol), self.board))
+                        moves.append(
+                            Move((row, col), (endRow, endCol), self.board))
                     elif endSq[0] != color:
-                        moves.append(Move((row, col), (endRow, endCol), self.board))
+                        moves.append(
+                            Move((row, col), (endRow, endCol), self.board))
                         break
                     elif endSq[0] == color:
                         break
@@ -151,6 +189,7 @@ class GameState:
                         break
                 else:
                     break
+
 
 class Move:
     rankToRows = {"1": 7, "2": 6, "3": 5,
@@ -179,13 +218,12 @@ class Move:
     def getChessNotation(self):
         if self.pieceMoved[1] != 'P':
             if 'w' in self.pieceMoved:
-                return "White: "+ self.pieceMoved[1]+self.getRankFile(self.endRow, self.endCol)
-            return "Black: "+ self.pieceMoved[1] + self.getRankFile(self.endRow, self.endCol)
+                return "White: " + self.pieceMoved[1]+self.getRankFile(self.endRow, self.endCol)
+            return "Black: " + self.pieceMoved[1] + self.getRankFile(self.endRow, self.endCol)
         else:
             if 'w' in self.pieceMoved:
                 return "White: " + self.getRankFile(self.endRow, self.endCol)
             return "Black: " + self.getRankFile(self.endRow, self.endCol)
-            
 
     def getRankFile(self, r, c):
         return self.colToFiles[c] + self.rowToRanks[r]
