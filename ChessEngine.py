@@ -71,9 +71,24 @@ class GameState:
     def getBishopMoves(self, row, col, moves):
         bishopMoves = ((1, 1), (1, -1), (-1, -1), (-1, 1))
         color = 'w' if self.whiteToMove else 'b'
-        if color == 'w':
+        for move in bishopMoves:
+            for i in range(1, 8):
+                endRow = row + move[0] * i
+                endCol = col + move[1] * i
 
-        elif color == 'b':
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endSq = self.board[endRow][endCol]
+                    if endSq == '--':
+                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                    elif endSq[0] == color:
+                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                            break
+                    # Need to add logic for the following:
+                    # - Blocking the Bishop from leaping over friendly and enemy pieces
+                    else:
+                        break
+                else:
+                    break
 
 
 class Move:
