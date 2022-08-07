@@ -79,12 +79,12 @@ class GameState:
                 if 0 <= endRow < 8 and 0 <= endCol < 8:
                     endSq = self.board[endRow][endCol]
                     if endSq == '--':
-                            moves.append(Move((row, col), (endRow, endCol), self.board))
+                        moves.append(Move((row, col), (endRow, endCol), self.board))
+                    elif endSq[0] != color:
+                        moves.append(Move((row, col), (endRow, endCol), self.board))
+                        break
                     elif endSq[0] == color:
-                            moves.append(Move((row, col), (endRow, endCol), self.board))
-                            break
-                    # Need to add logic for the following:
-                    # - Blocking the Bishop from leaping over friendly and enemy pieces
+                        break
                     else:
                         break
                 else:
