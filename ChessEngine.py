@@ -69,6 +69,7 @@ class GameState:
                     moves.append(Move((row,col),(row+1,col+1),self.board))
 
     def getBishopMoves(self, row, col, moves):
+        bishopMoves = ((1, 1), (1, -1), (-1, -1), (-1, 1))
         color = 'w' if self.whiteToMove else 'b'
         if color == 'w':
 
