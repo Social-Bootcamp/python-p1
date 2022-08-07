@@ -38,9 +38,7 @@ class GameState:
                 turn = self.board[row][col][0]
                 if (turn == 'w' and self.whiteToMove) or (turn == 'b' and not self.whiteToMove):
                     piece = self.board[row][col][1]
-                    if piece == "P":
-                        self.getPawnMoves(row, col, moves)
-                    # Add bishop move comparison
+                  
         return moves
 
     def getPawnMoves(self, row, col, moves):
