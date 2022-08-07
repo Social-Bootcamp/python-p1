@@ -40,15 +40,8 @@ class GameState:
                 turn = self.board[row][col][0]
                 if (turn == 'w' and self.whiteToMove) or (turn == 'b' and not self.whiteToMove):
                     piece = self.board[row][col][1]
-<<<<<<< HEAD
-<<<<<<< HEAD
-                  
-=======
                     self.moveFunctions[piece](row, col, moves)
->>>>>>> main
-=======
-                    self.moveFunctions[piece](row, col, moves)
->>>>>>> main
+
         return moves
 
     def getPawnMoves(self, row, col, moves):
@@ -120,7 +113,6 @@ class GameState:
     def getKingMoves(self, row, col, moves):
         pass
 
-<<<<<<< HEAD
 
     def getBishopMoves(self, row, col, moves):
         bishopMoves = ((1, 1), (1, -1), (-1, -1), (-1, 1))
@@ -143,9 +135,6 @@ class GameState:
                         break
                 else:
                     break
-
-=======
->>>>>>> main
 
 class Move:
     rankToRows = {"1": 7, "2": 6, "3": 5,
