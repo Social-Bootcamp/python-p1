@@ -96,22 +96,21 @@ def main():
                 if len(playerClickes) == 2:
                     move = ChessEngine.Move(
                         playerClickes[0], playerClickes[1], gs.board)
-                    print(move.getChessNotation())
                     if move in validMoves:
+                        print(move.getChessNotation())
                         gs.makeMove(move)
                         moveMade = True
                         sqSelected = ()
                         playerClickes = []
                     else:
                         playerClickes = [sqSelected]
-                        
             elif event.type == p.KEYDOWN:
                 if event.key == p.K_z:
                     gs.undoMove()
                     moveMade = True
         if moveMade:
             validMoves = gs.getValidMoves()
-            print(validMoves)
+            #print(validMoves)
             moveMade = False
 
         clock.tick(MAX_FPS)
