@@ -19,6 +19,9 @@ class GameState:
 
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
+        self.inCheck = False
+        self.pins = []
+        self.checks = []
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -26,9 +29,9 @@ class GameState:
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
         if move.pieceMoved == "wK":
-            self.whiteKingLocation = (move.endRow,move.endCol)
+            self.whiteKingLocation = (move.endRow, move.endCol)
         elif move.pieceMoved == "bK":
-            self.whiteKingLocation = (move.endRow,move.endCol)
+            self.whiteKingLocation = (move.endRow, move.endCol)
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -40,9 +43,9 @@ class GameState:
                 self.board[move.startRow][move.startCol] = move.pieceMoved
                 self.board[move.endRow][move.endCol] = '--'
             if move.pieceMoved == "wK":
-                self.whiteKingLocation = (move.endRow,move.endCol)
+                self.whiteKingLocation = (move.endRow, move.endCol)
             elif move.pieceMoved == "bK":
-                self.whiteKingLocation = (move.endRow,move.endCol)
+                self.whiteKingLocation = (move.endRow, move.endCol)
             self.whiteToMove = not self.whiteToMove
 
     def getValidMoves(self):
@@ -149,22 +152,18 @@ class GameState:
 
         kingMoves = ((1, 0), (-1, 0), (0, 1), (0, -1),
                      (1, 1), (-1, 1), (1, -1), (-1, -1))
-        enemyColor = 'b' if self.whiteToMove else 'w'
+        allyColor = 'w' if self.whiteToMove else 'b'
 
-        for i in range(8):
+        for i in range(1,8):
 
             endRow = row + kingMoves[i][0]
             endCol = col + kingMoves[i][1]
 
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endSQ = self.board[endRow][endCol]
-                if endSQ == '--':
+                if endSQ[0] != allyColor:
                     moves.append(
                         Move((row, col), (endRow, endCol), self.board))
-                elif endSQ[0] == enemyColor:
-                    moves.append(
-                        Move((row, col), (endRow, endCol), self.board))
-                    break
 
     def getBishopMoves(self, row, col, moves):
         bishopMoves = ((1, 1), (1, -1), (-1, -1), (-1, 1))

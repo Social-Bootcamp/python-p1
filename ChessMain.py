@@ -109,7 +109,7 @@ def main():
                     moveMade = True
         if moveMade:
             validMoves = gs.getValidMoves()
-            #print(validMoves)
+            print(validMoves)
             moveMade = False
 
         clock.tick(MAX_FPS)
