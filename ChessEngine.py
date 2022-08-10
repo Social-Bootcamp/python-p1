@@ -4,12 +4,12 @@ class GameState:
     def __init__(self):
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],  # 0
-            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["bP", "bP", "bP", "bP", "bP", "--", "bP", "bP"],
+            ["--", "--", "--", "--", "--", "bP", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "wP", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+            ["wP", "wP", "wP", "wP", "--", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]  # 7
         ]
         self.whiteToMove = True
@@ -19,9 +19,6 @@ class GameState:
 
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
-        self.inCheck = False
-        self.pins = []
-        self.checks = []
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -49,7 +46,37 @@ class GameState:
             self.whiteToMove = not self.whiteToMove
 
     def getValidMoves(self):
-        return self.getPossibleMoves()
+        moves = self.getPossibleMoves()
+
+        for i in range(len(moves)-1,-1,-1):
+            self.makeMove(moves[i])
+
+            self.whiteToMove = not self.whiteToMove
+            if self.inCheck():
+                moves.remove(moves[i])
+            self.whiteToMove = not self.whiteToMove
+            self.undoMove()
+        return moves
+
+    def inCheck(self):
+        if self.whiteToMove:
+            return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
+        else:
+            return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
+
+    def squareUnderAttack(self, row, col):
+        moves = []
+        self.moveFunctions['K'](row,col,moves)
+        print(moves)
+        self.whiteToMove = not self.whiteToMove
+        oppMoves = self.getPossibleMoves()
+        if moves in oppMoves:
+            oppMoves.remove(moves)
+        self.whiteToMove = not self.whiteToMove
+        for move in oppMoves:
+            if (move.endRow == row and move.endCol == col):
+                return True
+        return False
 
     def getPossibleMoves(self):
         moves = []
