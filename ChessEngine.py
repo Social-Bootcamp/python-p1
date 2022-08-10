@@ -4,12 +4,12 @@ class GameState:
     def __init__(self):
         self.board = [
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],  # 0
-            ["bP", "bP", "bP", "bP", "bP", "--", "bP", "bP"],
-            ["--", "--", "--", "--", "--", "bP", "--", "--"],
+            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "wP", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wP", "wP", "wP", "wP", "--", "wP", "wP", "wP"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]  # 7
         ]
         self.whiteToMove = True
@@ -28,7 +28,7 @@ class GameState:
         if move.pieceMoved == "wK":
             self.whiteKingLocation = (move.endRow, move.endCol)
         elif move.pieceMoved == "bK":
-            self.whiteKingLocation = (move.endRow, move.endCol)
+            self.blackKingLocation = (move.endRow, move.endCol)
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -52,8 +52,9 @@ class GameState:
             self.makeMove(moves[i])
 
             self.whiteToMove = not self.whiteToMove
+            print(moves)
             if self.inCheck():
-                moves.remove(moves[i])
+                    moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
         return moves
@@ -69,7 +70,7 @@ class GameState:
         oppMoves = self.getPossibleMoves()
         self.whiteToMove = not self.whiteToMove
         for move in oppMoves:
-            if move.endRow == row and move.endCol == col:
+            if (move.endRow == row and move.endCol == col):
                 return True
         return False
 
