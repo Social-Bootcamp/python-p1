@@ -65,16 +65,11 @@ class GameState:
             return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
 
     def squareUnderAttack(self, row, col):
-        moves = []
-        self.moveFunctions['K'](row,col,moves)
-        print(moves)
         self.whiteToMove = not self.whiteToMove
         oppMoves = self.getPossibleMoves()
-        if moves in oppMoves:
-            oppMoves.remove(moves)
         self.whiteToMove = not self.whiteToMove
         for move in oppMoves:
-            if (move.endRow == row and move.endCol == col):
+            if move.endRow == row and move.endCol == col:
                 return True
         return False
 
