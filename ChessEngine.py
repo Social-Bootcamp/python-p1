@@ -12,6 +12,17 @@ class GameState:
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "--", "wB", "wN", "wR"]  # 7
         ]
+        # Test for checkmate and stalmate
+        # self.board = [
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "bK", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["wQ", "--", "wK", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        # ]
         self.whiteToMove = True
         self.moveLog = []
         self.moveFunctions = {'P': self.getPawnMoves, 'N': self.getKnightMoves, 'B': self.getBishopMoves,
@@ -59,10 +70,10 @@ class GameState:
             self.undoMove()
             if len(moves) == 0 and self.inCheck():
                 self.CheckMate = True
-                print(self.CheckMate)
+                print("checkmate")
             elif len (moves) == 0 and not self.inCheck():
                 self.StalMate=True
-                print(self.StalMate)
+                print("stalmate")
         return moves
 
     def inCheck(self):
