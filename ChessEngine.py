@@ -3,20 +3,21 @@ class GameState:
 
     def __init__(self):
         self.board = [
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],  # 0
+            ["bR", "bN", "bB", "bQ", "--", "bB", "bN", "bR"],  # 0
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "bK", "--", "--", "--"],
+            ["--", "--", "wK", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
-            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]  # 7
+            ["wR", "wN", "wB", "wQ", "--", "wB", "wN", "wR"]  # 7
         ]
         self.whiteToMove = True
         self.moveLog = []
         self.moveFunctions = {'P': self.getPawnMoves, 'N': self.getKnightMoves, 'B': self.getBishopMoves,
                               'R': self.getRookMoves, 'Q': self.getQueenMoves, 'K': self.getKingMoves}
-
+        self.CheckMate = False
+        self.StalMate = False
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
 
@@ -40,9 +41,9 @@ class GameState:
                 self.board[move.startRow][move.startCol] = move.pieceMoved
                 self.board[move.endRow][move.endCol] = '--'
             if move.pieceMoved == "wK":
-                self.whiteKingLocation = (move.endRow, move.endCol)
+                self.whiteKingLocation = (move.startRow, move.startCol)
             elif move.pieceMoved == "bK":
-                self.whiteKingLocation = (move.endRow, move.endCol)
+                self.blackKingLocation = (move.startRow, move.startCol)
             self.whiteToMove = not self.whiteToMove
 
     def getValidMoves(self):
@@ -52,11 +53,16 @@ class GameState:
             self.makeMove(moves[i])
 
             self.whiteToMove = not self.whiteToMove
-            print(moves)
             if self.inCheck():
                     moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
+            if len(moves) == 0 and self.inCheck():
+                self.CheckMate = True
+                print(self.CheckMate)
+            elif len (moves) == 0 and not self.inCheck():
+                self.StalMate=True
+                print(self.StalMate)
         return moves
 
     def inCheck(self):
@@ -70,7 +76,7 @@ class GameState:
         oppMoves = self.getPossibleMoves()
         self.whiteToMove = not self.whiteToMove
         for move in oppMoves:
-            if (move.endRow == row and move.endCol == col):
+            if move.endRow == row and move.endCol == col:
                 return True
         return False
 
@@ -177,10 +183,10 @@ class GameState:
                      (1, 1), (-1, 1), (1, -1), (-1, -1))
         allyColor = 'w' if self.whiteToMove else 'b'
 
-        for i in range(1,8):
+        for i in kingMoves:
 
-            endRow = row + kingMoves[i][0]
-            endCol = col + kingMoves[i][1]
+            endRow = row + i[0]
+            endCol = col + i[1]
 
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endSQ = self.board[endRow][endCol]
