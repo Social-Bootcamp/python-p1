@@ -12,16 +12,25 @@ class GameState:
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]  # 7
         ]
+        # Test for checkmate and stalmate
+        # self.board = [
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "bK", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["wQ", "--", "wK", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        #     ["--", "--", "--", "--", "--", "--", "--", "--"],
+        # ]
         self.whiteToMove = True
         self.moveLog = []
         self.moveFunctions = {'P': self.getPawnMoves, 'N': self.getKnightMoves, 'B': self.getBishopMoves,
                               'R': self.getRookMoves, 'Q': self.getQueenMoves, 'K': self.getKingMoves}
-
+        self.CheckMate = False
+        self.StalMate = False
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
-        self.inCheck = False
-        self.pins = []
-        self.checks = []
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -31,7 +40,7 @@ class GameState:
         if move.pieceMoved == "wK":
             self.whiteKingLocation = (move.endRow, move.endCol)
         elif move.pieceMoved == "bK":
-            self.whiteKingLocation = (move.endRow, move.endCol)
+            self.blackKingLocation = (move.endRow, move.endCol)
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -43,13 +52,44 @@ class GameState:
                 self.board[move.startRow][move.startCol] = move.pieceMoved
                 self.board[move.endRow][move.endCol] = '--'
             if move.pieceMoved == "wK":
-                self.whiteKingLocation = (move.endRow, move.endCol)
+                self.whiteKingLocation = (move.startRow, move.startCol)
             elif move.pieceMoved == "bK":
-                self.whiteKingLocation = (move.endRow, move.endCol)
+                self.blackKingLocation = (move.startRow, move.startCol)
             self.whiteToMove = not self.whiteToMove
 
     def getValidMoves(self):
-        return self.getPossibleMoves()
+        moves = self.getPossibleMoves()
+
+        for i in range(len(moves)-1,-1,-1):
+            self.makeMove(moves[i])
+
+            self.whiteToMove = not self.whiteToMove
+            if self.inCheck():
+                    moves.remove(moves[i])
+            self.whiteToMove = not self.whiteToMove
+            self.undoMove()
+            if len(moves) == 0 and self.inCheck():
+                self.CheckMate = True
+                print("checkmate")
+            elif len (moves) == 0 and not self.inCheck():
+                self.StalMate=True
+                print("stalmate")
+        return moves
+
+    def inCheck(self):
+        if self.whiteToMove:
+            return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
+        else:
+            return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
+
+    def squareUnderAttack(self, row, col):
+        self.whiteToMove = not self.whiteToMove
+        oppMoves = self.getPossibleMoves()
+        self.whiteToMove = not self.whiteToMove
+        for move in oppMoves:
+            if move.endRow == row and move.endCol == col:
+                return True
+        return False
 
     def getPossibleMoves(self):
         moves = []
@@ -154,10 +194,10 @@ class GameState:
                      (1, 1), (-1, 1), (1, -1), (-1, -1))
         allyColor = 'w' if self.whiteToMove else 'b'
 
-        for i in range(1,8):
+        for i in kingMoves:
 
-            endRow = row + kingMoves[i][0]
-            endCol = col + kingMoves[i][1]
+            endRow = row + i[0]
+            endCol = col + i[1]
 
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endSQ = self.board[endRow][endCol]
