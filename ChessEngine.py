@@ -9,7 +9,7 @@ class GameState:
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+            ["wP", "wP", "bP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]  # 7
         ]
         # Test for checkmate and stalmate
@@ -116,6 +116,7 @@ class GameState:
                 if self.board[row-1][col+1][0] == 'b':
                     moves.append(Move((row, col), (row-1, col+1), self.board))
         elif color == 'b':
+         if (row+1)<8: 
             if self.board[row+1][col] == '--':
                 moves.append(Move((row, col), (row+1, col), self.board))
                 if row == 1 and self.board[row+2][col] == '--':
